@@ -11,9 +11,11 @@ from linebot.models import *
 app = Flask(__name__)
 
 # Channel Access Token
-line_bot_api = LineBotApi('yLbk5g3LkoCwqPpKkaRkI9S0DPZ871Z/tQg4KQRLl1G55j07EzjyJzW8ad2MTWDUp8VZ+NSvpdCSH/QarP5ju/t7/1AfdCOBNCp+rNbXjWUkm1R1Kln/BK4JNVOVQ+y981rgYb3dg8nuA0baLY9sRAdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(
+    'yLbk5g3LkoCwqPpKkaRkI9S0DPZ871Z/tQg4KQRLl1G55j07EzjyJzW8ad2MTWDUp8VZ+NSvpdCSH/QarP5ju/t7/1AfdCOBNCp+rNbXjWUkm1R1Kln/BK4JNVOVQ+y981rgYb3dg8nuA0baLY9sRAdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
 handler = WebhookHandler('5bb12c08aa3a7b6836c3039472cf23e6')
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -30,13 +32,17 @@ def callback():
         abort(400)
     return 'OK'
 
+
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
     line_bot_api.reply_message(event.reply_token, message)
+    line_bot_api.reply_message(event.source.group_id)
+
 
 import os
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
